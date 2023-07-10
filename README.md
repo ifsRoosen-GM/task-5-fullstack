@@ -1,29 +1,35 @@
-<h1>task-5-fullstack</h1>
+This directory contains a list of open source retry bugs and instructions on how to reproduce them.
 
-<h2>Virtual Internship Experience (Investree) - Fullstack - Roosen Gabriel Manurung</h2>
+# How to add an analysis report?
 
-<h2>Restful API menggunakan Laravel Passport </h2>
-<ol>
-    <li>jwt authentication menggunakan laravel passport</li>
-    <li>restful api posts (create, list all, show detail, update & delete)</li>
-    <li>mekanisme middleware auth api passport ke endpoint posts (create, list all, show detail, update dan delete)</li>
-    <li>prefix versi pada api yang telah dibuat (contoh : api/v1)</li>
-    <li>relasi eloquent pada table posts dan categories</li>
-    <li>pagination pada api list all posts</li>
-    <li>unit testing untuk setiap api posts</li>
-</ol>
+To add a new bug report, follow these steps:
 
-<h2>ERD</h2>
-<img src="ERD.jpg"/>
+1. Create a sub-directory for that specific bug: `[APPLICATION_NAME]-[BUG_ID]`
+2. Create a `README.md` file inside said sub-directory describing the issue and steps to reproduce (more below)
+3. [OPTIONAL] Create a script or Docker file that reproduces the bug automathically
 
-<h2>Tema Project: Blog Sederhana - Menggunakan laravel Blade serta Laravel UI</h2>
-<p>Pada project ini, saya menggunakan template [Purple Buzz – Free Responsive Bootstrap 5 HTML5] Link: https://themewagon.com/themes/free-bootstrap-5-html5-commercial-template-purple-buzz/</p>
+# What should a report contain?
 
-<ol>
-  <li>Fitur authentication menggunakan laravel UI</li>
-  <li>Fungsional CRUD article serta category </li>
-  <li>Menggunakan laravel blade untuk membuat templatenya</li>
-  <li>Relasi laravel eloquent untuk menghubungkan relasi antar tabel</li>
-  <li> Seeder untuk membuat sample user</li>
-  <li>Unit testing setiap halaman crud dan fitur </li>
-</ol>
+The `README.md` file should include the following:
+
+1. A brief summary of the bug (1-2 sentences max)
+2. The retry bug category - `IF`, `WHEN`, `HOW`, or `WHERE` - and sub-category - `IF-MISSING`, `IF-UNNECESSARY`, `WHEN-FREQEUNCY`, `WHEN-COUNT`, `HOW-CLEANUP`, `HOW-OTHER` (see details blow)
+3. Steps to reproduce, including:
+    a. revision / commit ID
+    b. details on how to remove the fix / patch
+    c. compilation and build instructions & commands
+    d. bug-triggering instructions & commands, including the bug-triggering input
+    
+# Retry bug cateogries
+
+So far we have identified these retry bug categories and sub-categories:
+1. `IF`: these retry bugs occur because the applicaton either:
+    a. `IF-MISSING`: doesn't retry the operation for a transient error, or
+    b. `IF-UNNECESSARY`: retries an operation when a non-transient error occurs
+2. `WHEN`: these retry bug occur because the application either:
+    a. `WHEN-FREQUENCY`: retries too aggressively without enough delay between retries, or
+    b. `WHEN-COUNT`: retries too many times (e.g. infinitely)
+3. `HOW`: these retry bugs occur due to semantic errors that further break down into:
+    a. `HOW-CLEAMUP`: bugs manifesting because state between two retry attempts is not properly cleaned / reset (e.g. a file descriptor opened at the beginning of the operation is not closed if the operation fails),
+    b. `HOW-OTHERS`: everythiing else (e.g. data races, NULL dereferences, deadlocks, etc.)
+4. `WHERE`: these retry bugs occur when the wrong component does the retry (e.g. the component currently recovering from an error)
